@@ -1,3 +1,7 @@
+import React from "react"
+import { useState } from "react"
+
+
 export default function Post({imageUser,nameUser,imagePost,nameImage,likedBy,likes}){
   
   function savedPicture(button){
@@ -8,14 +12,49 @@ export default function Post({imageUser,nameUser,imagePost,nameImage,likedBy,lik
     }
 
   }
+  const [buttonHeart, setButtonHeart] = useState(() =>
+    React.createElement('ion-icon', {
+      name: 'heart-outline',
+      onClick: (event) => likedPicture(event.target),
+    })
+  );
   
+  const [allLikes,setAllLikes] = React.useState(likes)
+  
+  function likedPicture(button){
+    if (button.name == "heart-outline" ){
+      setButtonHeart(<>
+        <ion-icon name="heart" style={{color:"red"}} onClick={(b)=>likedPicture(b.target)}></ion-icon>
+        </>)
+      setAllLikes(likes + 1)
+      
+    }else if (button.name == "heart"){
+      setButtonHeart(<>
+        <ion-icon name="heart-outline" style={{color:"#000000"}} onClick={(b)=>likedPicture(b.target)}></ion-icon>
+        </>)
+      setAllLikes(likes )
+    }
+
+  }
+  
+  function likePictureImage(){
+    const heartName = buttonHeart.props.name;
+    if (heartName == "heart-outline"|| allLikes == likes){
+      setButtonHeart(<>
+        <ion-icon name="heart" style={{color:"red"}} onClick={(b)=>likedPicture(b.target)}></ion-icon>
+        </>)
+      setAllLikes(likes + 1)
+    }
+  }
+    
+
   
   return(
         <>
            <div class="post">
             <div class="topo">
               <div class="usuario">
-                <img src={imageUser} alt={nameUser}/>
+                <img src={imageUser} alt={nameUser} />
                 {nameUser}
               </div>
               <div class="acoes">
@@ -24,13 +63,13 @@ export default function Post({imageUser,nameUser,imagePost,nameImage,likedBy,lik
             </div>
 
             <div class="conteudo">
-              <img src={imagePost} alt={nameImage}/>
+              <img src={imagePost} alt={nameImage} onClick={()=>likePictureImage()}/>
             </div>
 
             <div class="fundo">
               <div class="acoes">
                 <div>
-                  <ion-icon name="heart-outline"></ion-icon>
+                  {buttonHeart}
                   <ion-icon name="chatbubble-outline"></ion-icon>
                   <ion-icon name="paper-plane-outline"></ion-icon>
                 </div>
@@ -42,7 +81,7 @@ export default function Post({imageUser,nameUser,imagePost,nameImage,likedBy,lik
               <div class="curtidas">
                 <img src="assets/img/respondeai.svg" alt="respondeai"/>
                 <div class="texto">
-                  Curtido por <strong>{likedBy}</strong> e <strong>outras {likes} pessoas</strong>
+                  Curtido por <strong>{likedBy}</strong> e <strong>outras {Intl.NumberFormat('pt-BR').format(allLikes)} pessoas</strong>
                 </div>
               </div>
             </div>
